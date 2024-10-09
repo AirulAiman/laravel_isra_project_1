@@ -27,7 +27,7 @@
                     Profile
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/admin/profile/threats">Threat</a></li>
+                    <li><a class="dropdown-item" href="/admin/profile/threats/view">Threat</a></li>
                     <li><a class="dropdown-item" href="/admin/profile/vulnerabilities">Vulnerability</a></li>
                 </ul>
             </li>

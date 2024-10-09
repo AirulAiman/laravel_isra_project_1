@@ -31,7 +31,7 @@
                                     <td>
                                         {{-- EDIT BUTTON --}}
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#edit-modal">
+                                            data-bs-target="#edit-modal-{{ $threat->id }}">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
 
@@ -42,7 +42,7 @@
                                         </button>
 
                                         {{-- DELETE CONFIRMATION MODAL --}}
-                                        <div class="modal fade" id="delete-confirmation-modal-{{ $threat->id }}"
+                                        <div class="modal fade my-5" id="delete-confirmation-modal-{{ $threat->id }}"
                                             tabindex="-1" aria-hidden="true"
                                             aria-labelledby="delete-confirmation-modal-label-{{ $threat->id }}"
                                             data-bs-target="#delete-confirmation-modal-{{ $threat->id }}">

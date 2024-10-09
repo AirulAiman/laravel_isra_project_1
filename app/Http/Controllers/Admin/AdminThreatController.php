@@ -13,7 +13,9 @@ class AdminThreatController extends Controller
     {
         $groups = ThreatGroup::with('threats')->get();
         $groupies = ThreatGroup::all();
-        return view('admin.tthreat-profile.index', compact('groups', 'groupies'));
+        $threats = Threat::all();
+
+        return view('admin.tthreat-profile.index', compact('groups', 'groupies', 'threats'));
     }
     public function index()
     {
@@ -37,7 +39,7 @@ class AdminThreatController extends Controller
         ]);
 
         Threat::create($request->all());
-        return redirect()->route('threats.index')->with('success', 'Threat created successfully.');
+        return redirect()->route('threats.view')->with('success', 'Threat created successfully.');
     }
 
     public function edit($id)
@@ -57,7 +59,8 @@ class AdminThreatController extends Controller
 
         $threat = Threat::findOrFail($id);
         $threat->update($request->all());
-        return redirect()->route('threats.index')->with('success', 'Threat updated successfully.');
+
+        return redirect()->route('threats.view')->with('success', 'Threat updated successfully.');
     }
 
     public function destroy($id)
