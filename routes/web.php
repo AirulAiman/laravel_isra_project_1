@@ -118,6 +118,8 @@ Route::prefix('user/profile/threats')->group(function () {
     Route::get('/{threat}/edit', [ThreatController::class, 'edit'])->name('threats.edit');
     Route::put('/{threat}', [ThreatController::class, 'update'])->name('threats.update');
     Route::delete('/{threat}', [ThreatController::class, 'destroy'])->name('threats.destroy');
+    // Route::get('/get-threats/{groupId}', [ThreatController::class, 'getThreats'])->name('get.threats');
+    Route::get('/threats/group/{groupId}', [ThreatController::class, 'getThreatsByGroup']);
 
     // Threat Group management
     Route::get('/groups/create', [ThreatGroupController::class, 'create'])->name('threat-groups.create');
@@ -125,6 +127,7 @@ Route::prefix('user/profile/threats')->group(function () {
     Route::get('/groups/{group}/edit', [ThreatGroupController::class, 'edit'])->name('threat-groups.edit');
     Route::put('/groups/{group}', [ThreatGroupController::class, 'update'])->name('threat-groups.update');
     Route::delete('/groups/{group}', [ThreatGroupController::class, 'destroy'])->name('threat-groups.destroy');
+    // Route::get('/get-threats-by-group/{groupId}', [ThreatController::class, 'getThreatsByGroup']);
 });
 
 use App\Http\Controllers\VulnerabilityController;
@@ -137,6 +140,8 @@ Route::prefix('user/profile/Vulnerability')->group(function () {
     Route::get('/{vulnerability}/edit', [VulnerabilityController::class, 'edit'])->name('vulnerabilities.edit');
     Route::put('/{vulnerability}', [VulnerabilityController::class, 'update'])->name('vulnerabilities.update');
     Route::delete('/{vulnerability}', [VulnerabilityController::class, 'destroy'])->name('vulnerabilities.destroy');
+    // Route::get('/get-vulnerabilities/{groupId}', [VulnerabilityController::class, 'getVulnerabilities'])->name('get.vulnerabilities');
+    Route::get('/vulnerabilities/group/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup']);
 
     // Vulnerability Group management
     Route::get('/groups/create', [VulnerabilityGroupController::class, 'create'])->name('vulnerability-groups.create');
@@ -144,6 +149,7 @@ Route::prefix('user/profile/Vulnerability')->group(function () {
     Route::get('/groups/{group}/edit', [VulnerabilityGroupController::class, 'edit'])->name('vulnerability-groups.edit');
     Route::put('/groups/{group}', [VulnerabilityGroupController::class, 'update'])->name('vulnerability-groups.update');
     Route::delete('/groups/{group}', [VulnerabilityGroupController::class, 'destroy'])->name('vulnerability-groups.destroy');
+    // Route::get('/get-vulnerabilities-by-group/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup']);
 });
 
 use App\Http\Controllers\Admin\TestOrganizationController;
@@ -210,25 +216,27 @@ Route::prefix('admin/profile/vulnerabilities/')->group(function () {
     Route::delete('/groups/{group}', [VulnGroupController::class, 'destroy'])->name('vulnerability-groups.destroy');
 });
 
-
 use App\Http\Controllers\RiskAssessmentController;
 
-Route::resource('risk_assessments', RiskAssessmentController::class);
-// routes/web.php
-Route::get('/threats/group/{groupId}', [ThreatController::class, 'getThreatsByGroup'])->name('threats.byGroup');
-Route::get('/vulnerabilities/group/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup'])->name('vulnerabilities.byGroup');
+// Route::resource('risk_assessments', RiskAssessmentController::class);
 
 
 
-Route::get('/threats/{groupId}', [ThreatController::class, 'getThreatsByGroup']);
-Route::get('/vulnerabilities/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup']);
-Route::get('/api/vulnerabilities/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup']);
-Route::get('/api/threats/{groupId}', [ThreatController::class, 'getThreatsByGroup']);
 
-Route::resource('risk_assessments', RiskAssessmentController::class);
+Route::get('user/risk_assessments', [RiskAssessmentController::class, 'index'])->name('risk_assessments.index');
+Route::get('user/risk_assessments/create', [RiskAssessmentController::class, 'create'])->name('risk_assessments.create');
+Route::post('user/risk_assessments', [RiskAssessmentController::class, 'store'])->name('risk_assessments.store');
+Route::get('user/risk_assessments/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessments.edit');
+Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessments.update');
+Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessments.destroy');
 
-Route::get('get-threats-by-group/{groupId}', [ThreatController::class, 'getThreatsByGroup']);
-Route::get('get-vulnerabilities-by-group/{groupId}', [VulnerabilityController::class, 'getVulnerabilitiesByGroup']);
+
+
+
+
+
+
+
 
 
 

@@ -8,13 +8,9 @@ class ThreatGroup extends Model
 {
     protected $fillable = ['name'];
 
+    // A ThreatGroup has many Threats
     public function threats()
-{
-    return $this->hasMany(Threat::class, 'threat_group_id');
-}
-
-    public function riskAssessments()
     {
-        return $this->hasMany(RiskAssessment::class, 'threat_group_id');
+        return $this->hasMany(Threat::class);
     }
 }

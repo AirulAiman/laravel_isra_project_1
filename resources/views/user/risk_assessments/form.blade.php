@@ -52,16 +52,6 @@
 </div>
 
 <div class="form-group">
-    <label for="start_time">Start Time</label>
-    <input type="datetime-local" name="start_time" class="form-control" value="{{ isset($riskAssessment) ? $riskAssessment->start_time->format('Y-m-d\TH:i') : old('start_time') }}" required>
-</div>
-
-<div class="form-group">
-    <label for="end_time">End Time</label>
-    <input type="datetime-local" name="end_time" class="form-control" value="{{ isset($riskAssessment) && $riskAssessment->end_time ? $riskAssessment->end_time->format('Y-m-d\TH:i') : old('end_time') }}">
-</div>
-
-<div class="form-group">
     <label for="likelihood">Likelihood</label>
     <select name="likelihood" class="form-control" required>
         <option value="Low" {{ isset($riskAssessment) && $riskAssessment->likelihood == 'Low' ? 'selected' : '' }}>Low</option>

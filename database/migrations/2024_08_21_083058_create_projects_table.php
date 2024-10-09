@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('prj_desc');
             $table->string('start_date');
             $table->string('end_date');
-            $table->foreignId('organization')->nullable()->constrained(table: 'organizations', column: 'org_id');
             $table->timestamps(); // this will add 'created_at' and 'updated_at' columns
         });
     }

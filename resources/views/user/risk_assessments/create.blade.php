@@ -1,18 +1,19 @@
 @extends('base.layout')
 
-@section('content')
+@section('title', 'Create Risk Assessment')
 
+@section('content')
 @include('navbar.layout')
 
 <div class="container">
-    <h1>Create New Risk Assessment</h1>
+    <h1>Create Risk Assessment</h1>
 
     <form action="{{ route('risk_assessments.store') }}" method="POST">
         @csrf
-        
+
         <div class="form-group">
             <label for="asset_id">Asset</label>
-            <select name="asset_id" id="asset_id" class="form-control" required>
+            <select name="asset_id" class="form-control" required>
                 @foreach($assets as $asset)
                     <option value="{{ $asset->asset_id }}">{{ $asset->asset_name }}</option>
                 @endforeach
@@ -21,7 +22,8 @@
 
         <div class="form-group">
             <label for="threat_group_id">Threat Group</label>
-            <select name="threat_group_id" id="threat_group_id" class="form-control" required>
+            <select name="threat_group_id" class="form-control" id="threatGroupSelect" required>
+                <option value="">Select Threat Group</option>
                 @foreach($threatGroups as $group)
                     <option value="{{ $group->id }}">{{ $group->name }}</option>
                 @endforeach
@@ -30,15 +32,22 @@
 
         <div class="form-group">
             <label for="threat_id">Threat</label>
-            <select name="threat_id" id="threat_id" class="form-control" required>
+            <select name="threat_id" class="form-control" id="threatSelect" required>
                 <option value="">Select Threat</option>
-                <!-- JavaScript will populate this based on the selected group -->
+                @foreach($threatGroups as $group)
+                    @foreach($group->threats as $threat)
+                        <option value="{{ $threat->id }}" class="group-{{ $group->id }}" style="display:none;">
+                            {{ $threat->name }}
+                        </option>
+                    @endforeach
+                @endforeach
             </select>
         </div>
 
         <div class="form-group">
             <label for="vulnerability_group_id">Vulnerability Group</label>
-            <select name="vulnerability_group_id" id="vulnerability_group_id" class="form-control" required>
+            <select name="vulnerability_group_id" class="form-control" id="vulnerabilityGroupSelect" required>
+                <option value="">Select Vulnerability Group</option>
                 @foreach($vulnerabilityGroups as $group)
                     <option value="{{ $group->id }}">{{ $group->name }}</option>
                 @endforeach
@@ -47,99 +56,59 @@
 
         <div class="form-group">
             <label for="vulnerability_id">Vulnerability</label>
-            <select name="vulnerability_id" id="vulnerability_id" class="form-control" required>
+            <select name="vulnerability_id" class="form-control" id="vulnerabilitySelect" required>
                 <option value="">Select Vulnerability</option>
-                <!-- JavaScript will populate this based on the selected group -->
+                @foreach($vulnerabilityGroups as $group)
+                    @foreach($group->vulnerabilities as $vulnerability)
+                        <option value="{{ $vulnerability->id }}" class="vgroup-{{ $group->id }}" style="display:none;">
+                            {{ $vulnerability->name }}
+                        </option>
+                    @endforeach
+                @endforeach
             </select>
-        </div>
-        <div class="form-group">
-            <label for="confidentiality">Confidentiality</label>
-            <input type="number" name="confidentiality" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="integrity">Integrity</label>
-            <input type="number" name="integrity" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="availability">Availability</label>
-            <input type="number" name="availability" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="personnel">Personnel</label>
-            <input type="text" name="personnel" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="start_time">Start Time</label>
-            <input type="datetime-local" name="start_time" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="end_time">End Time</label>
-            <input type="datetime-local" name="end_time" class="form-control">
-        </div>
-
-        <div class="form-group">
-            <label for="likelihood">Likelihood</label>
-            <select name="likelihood" class="form-control" required>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="impact">Impact</label>
-            <select name="impact" class="form-control" required>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="risk_level">Risk Level</label>
-            <select name="risk_level" class="form-control" required>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="risk_owner">Risk Owner</label>
-            <input type="text" name="risk_owner" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-            <label for="mitigation_option">Mitigation Option</label>
-            <textarea name="mitigation_option" class="form-control" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="treatment">Treatment</label>
-            <textarea name="treatment" class="form-control"></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Create Risk Assessment</button>
     </form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section('scripts')
 <script>
-// JavaScript to populate threats and vulnerabilities based on selected groups
-document.getElementById('threat_group_id').addEventListener('change', function() {
-    const groupId = this.value;
-    $('#threat_id').load(`/threats/group/${groupId}`);
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        const threatGroupSelect = document.getElementById('threatGroupSelect');
+        const threatSelect = document.getElementById('threatSelect');
+        const vulnerabilityGroupSelect = document.getElementById('vulnerabilityGroupSelect');
+        const vulnerabilitySelect = document.getElementById('vulnerabilitySelect');
 
-document.getElementById('vulnerability_group_id').addEventListener('change', function() {
-    const groupId = this.value;
-    $('#vulnerability_id').load(`/vulnerabilities/group/${groupId}`);
-});
+        threatGroupSelect.addEventListener('change', function () {
+            const selectedGroupId = this.value;
+            const options = threatSelect.options;
+
+            for (let i = 0; i < options.length; i++) {
+                options[i].style.display = 'none';
+                if (options[i].classList.contains('group-' + selectedGroupId)) {
+                    options[i].style.display = 'block';
+                }
+            }
+
+            threatSelect.value = ""; // Reset threat select
+        });
+
+        vulnerabilityGroupSelect.addEventListener('change', function () {
+            const selectedGroupId = this.value;
+            const options = vulnerabilitySelect.options;
+
+            for (let i = 0; i < options.length; i++) {
+                options[i].style.display = 'none';
+                if (options[i].classList.contains('vgroup-' + selectedGroupId)) {
+                    options[i].style.display = 'block';
+                }
+            }
+
+            vulnerabilitySelect.value = ""; // Reset vulnerability select
+        });
+    });
 </script>
+@endsection
 
 @endsection
