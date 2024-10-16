@@ -35,7 +35,7 @@ class RiskAssessmentController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'asset_id' => 'required|exists:asset_register,id',
+            'asset_id' => 'required|exists:asset_register,asset_id',
             'threat_group_id' => 'required|exists:threat_groups,id',
             'threat_id' => 'required|exists:threats,id',
             'vulnerability_group_id' => 'required|exists:vulnerability_groups,id',

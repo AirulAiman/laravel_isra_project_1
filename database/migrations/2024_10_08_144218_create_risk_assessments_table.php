@@ -9,8 +9,8 @@ class CreateRiskAssessmentsTable extends Migration
     public function up()
     {
         Schema::create('risk_assessments', function (Blueprint $table) {
-            $table->id(); // Make sure to add an ID column
-            $table->foreignId('asset_id')->constrained('asset_register')->onDelete('cascade');
+            $table->id(); // or your custom primary key
+            $table->foreignId('asset_id')->constrained('asset_register')->onDelete('cascade'); // Ensure foreign key constraints
             $table->foreignId('threat_group_id')->nullable()->constrained('threat_groups')->onDelete('set null');
             $table->foreignId('threat_id')->nullable()->constrained('threats')->onDelete('set null');
             $table->foreignId('vulnerability_group_id')->nullable()->constrained('vulnerability_groups')->onDelete('set null');
