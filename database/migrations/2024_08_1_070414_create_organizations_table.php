@@ -14,14 +14,9 @@ class CreateOrganizationsTable extends Migration
     public function up()
     {
         Schema::create('organizations', function (Blueprint $table) {
-            // Auto-incrementing primary key for 'org_id'
-            $table->id('org_id');
-
-            // Organization name and logo fields
+            $table->id('org_id');  // Define this as an unsignedBigInteger for consistency
             $table->string('org_name');
-            $table->string('org_logo')->nullable(); // nullable for cases without logo
-
-            // Timestamps for created_at and updated_at
+            $table->string('org_logo')->nullable();
             $table->timestamps();
         });
     }

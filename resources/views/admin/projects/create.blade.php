@@ -1,26 +1,32 @@
-<div class="modal fade my-5" id="create-project" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="create-project">Create Project</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+@extends('base.layout')
+
+@section('content')
+    <div class="container">
+       
+
+        <form action="{{ route('projects.store') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="prj_name">Project Name</label>
+                <input type="text" name="prj_name" class="form-control" required>
             </div>
-            <div class="modal-body">
-                <form action="{{ route('admin.projects.create') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="org_name" class="form-label fs-6">Title: </label>
-                        <input class="form-control" type="text" id="prj_name" name="prj_name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="org_desc" class="form-label fs-6">Description: </label>
-                        <textarea class="form-control" type="text" id="prj_desc" name="prj_desc" rows="5"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                    </div>
-                </form>
+
+            <div class="form-group">
+                <label for="prj_desc">Project Description</label>
+                <textarea name="prj_desc" class="form-control" required></textarea>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" name="start_date" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="end_date">End Date</label>
+                <input type="date" name="end_date" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Create Project</button>
+        </form>
     </div>
-</div>
+@endsection

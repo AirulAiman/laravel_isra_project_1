@@ -1,13 +1,12 @@
 @extends('base.layout')
-@section('title', 'ISRA')
 
 @section('content')
-
-    {{-- NAVBAR --}}
-    @include('navbar.layout')
-
-
-    {{-- TITLE --}}
+    <h3>Your Projects</h3>
+    <ul>
+        @foreach($projects as $project)
+            <li>{{ $project->prj_name }} ({{ $project->start_date }} - {{ $project->end_date }})</li>
+        @endforeach
+    </ul> {{-- TITLE --}}
     <div class="container">
         <div class="align-items-center justify-content-center my-5">
             <div class="container text-center fw-bold fs-2 my-5">
@@ -71,3 +70,5 @@
         display: inline;
     }
 </style>
+
+@endsection

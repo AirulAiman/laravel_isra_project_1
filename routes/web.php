@@ -235,6 +235,25 @@ Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'upda
 Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessments.destroy');
 
 
+use App\Http\Controllers\Admin\UserManagementController;
+
+// Organization Profile and Project Management
+Route::get('/organizations/{org_id}', [TestOrganizationController::class, 'show'])->name('organizations.show');
+Route::post('/organizations/{org_id}/assign-user', [UserManagementController::class, 'assignUser'])->name('organizations.assignUser');
+
+// Admin-specific Routes
+Route::get('/organizations/{org_id}/manage-users', [UserManagementController::class, 'manageUsers'])->name('admin.organizations.manageUsers');
+Route::get('/organizations/{org_id}/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::post('/organizations/{org_id}/projects', [ProjectController::class, 'store'])->name('projects.store');
+
+// Project Management
+Route::get('/admin/projects', [ProjectController::class, 'index'])->name('user.projects'); // Users can view their org projects
+Route::get('/admin/projects', [ProjectController::class, 'view'])->name('admin.projects'); // Admin view all projects
+Route::post('/admin/projects', [ProjectController::class, 'store'])->name('projects.store'); // Store new projects
+Route::put('/admin/projects/{prj_id}', [ProjectController::class, 'update'])->name('projects.update'); // Update projects
+Route::get('/admin/projects/create', [ProjectController::class, 'create'])->name('projects.create'); // Create new project
+
+
 
 
 

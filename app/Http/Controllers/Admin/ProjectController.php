@@ -3,56 +3,101 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Organization;
 use Illuminate\Http\Request;
 use App\Models\Project;
-use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Auth; // Make sure Auth facade is imported
 
 class ProjectController extends Controller
 {
-
+    // ====================================
+    // INDEX (for users to view their own organization's projects)
+    // ====================================
     public function index()
-{
-    $user = Auth::user();
-    $projects = Project::where('org_id', $user->org_id)->get();
-    return view('user.projects.index', compact('projects'));
-}
+    {
+        $user = Auth::user();
+        $projects = Project::where('org_id', $user->org_id)->get();
+        return view('user.projects.index', compact('projects'));
+    }
 
     // ====================================
-    // READ
+    // STORE (Create a new project)
+    // ====================================
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'prj_name' => 'required|string|max:255',
+    //         'prj_desc' => 'required|string',
+    //         'org_id' => 'required|exists:organizations,org_id',
+    //     ]);
+
+    //     Project::create($request->all());
+    //     return redirect()->route('organizations.show', $request->org_id);
+    // }
+
+    // ====================================
+    // VIEW (for admin to view all projects)
     // ====================================
     public function view()
     {
-        $projects = Project::all();
-        return view('admin.projects.main', compact('projects'));
+        $projects = Project::all(); // Admin sees all projects
+        return view('admin.projects.index', compact('projects')); // Assuming view is in 'admin.projects.index'
     }
 
-    // ====================================
-    // CREATE
-    // ====================================
-    public function create(Request $request)
+    public function create($org_id)
     {
-        $validatedData = $request->validate([
-            'prj_name' => 'required|string',
-            'prj_desc' => 'required|string'
-        ]);
+        // Fetch the organization using the provided org_id
+        $organization = Organization::findOrFail($org_id); // Ensure the organization exists
 
-        Project::create([
-            'prj_id' => mt_rand(100000, 900000),
-            'prj_name' => $validatedData['prj_name'],
-            'prj_desc' => $validatedData['prj_desc'],
-            'created_at' => now(),
-            'updated_at' => now(),
-            'start_date' => now(),
-            'end_date' => '',
-            'organization' => 'unassigned'
-        ]);
-
-        return redirect(route('admin.projects'));
+        // Pass the organization to the view
+        return view('admin.projects.create', compact('organization'));
     }
-
     // ====================================
-    // UPDATE
+    // CREATE (for admin to create a project)
+    // ====================================
+    // public function create(Request $request)
+    // {
+    //     $validatedData = $request->validate([
+    //         'prj_name' => 'required|string',
+    //         'prj_desc' => 'required|string'
+    //     ]);
+
+    //     Project::create([
+    //         'prj_id' => mt_rand(100000, 900000),
+    //         'prj_name' => $validatedData['prj_name'],
+    //         'prj_desc' => $validatedData['prj_desc'],
+    //         'created_at' => now(),
+    //         'updated_at' => now(),
+    //         'org_id' => $request->org_id, // Pass the correct org_id
+    //     ]);
+
+    //     return redirect()->route('admin.projects');
+    // }
+
+
+    public function store(Request $request, $org_id)
+    {
+        // Validate request data
+        $request->validate([
+            'prj_name' => 'required|string|max:255',
+            'prj_desc' => 'required|string',
+
+        ]);
+
+        // Ensure organization exists
+        $organization = Organization::findOrFail($org_id);
+
+        // Create the project for the specific organization
+        Project::create([
+            'prj_name' => $request->prj_name,
+            'prj_desc' => $request->prj_desc,
+            'org_id' => $organization->org_id, // Assign to the correct organization
+        ]);
+
+        return redirect()->route('organizations.show', $org_id)->with('success', 'Project created successfully!');
+    }
+    // ====================================
+    // UPDATE (for admin to update project details)
     // ====================================
     public function update(Request $request, $prj_id)
     {
@@ -61,28 +106,21 @@ class ProjectController extends Controller
             return redirect()->back()->withErrors(['error' => 'Project not found']);
         }
 
-        try {
-            $validatedData = $request->validate([
-                'prj_name' => 'nullable|string',
-                'prj_desc' => 'nullable|string'
-            ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors());
+        $validatedData = $request->validate([
+            'prj_name' => 'nullable|string',
+            'prj_desc' => 'nullable|string'
+        ]);
+
+        if (isset($validatedData['prj_name'])) {
+            $project->prj_name = $validatedData['prj_name'];
+        }
+        if (isset($validatedData['prj_desc'])) {
+            $project->prj_desc = $validatedData['prj_desc'];
         }
 
-        try {
-            if (isset($validatedData['prj_name'])) {
-                $project->prj_name = $validatedData['prj_name'];
-            }
-            if (isset($validatedData['prj_desc'])) {
-                $project->prj_desc = $validatedData['prj_desc'];
-            }
-            $project->updated_at = now();
-            $project->save();
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to update project']);
-        }
+        $project->updated_at = now();
+        $project->save();
 
-        return redirect(route('admin.projects'));
+        return redirect()->route('admin.projects');
     }
 }
