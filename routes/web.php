@@ -103,6 +103,8 @@ use App\Http\Controllers\Admin\ProjectController;
 Route::get('/admin/projects', [ProjectController::class, 'view'])->name('admin.projects');
 Route::post('/admin/projects/create', [ProjectController::class, 'create'])->name('admin.projects.create');
 Route::patch('/admin/projects/{id}/update', [ProjectController::class, 'update'])->name('admin.projects.update');
+Route::get('/admin/projects', [ProjectController::class, 'main'])->name('projects.main');
+
 
 
 use App\Http\Controllers\ThreatGroupController;
@@ -157,6 +159,8 @@ use App\Http\Controllers\Admin\TestOrganizationController;
 Route::get('/admin/test/organizations', [TestOrganizationController::class, 'view'])->name('test.organizations');
 Route::post('/admin/test/organizations', [TestOrganizationController::class, 'create'])->name('test.organizations.create');
 Route::patch('/admin/test/organizations/{id}/update', [TestOrganizationController::class, 'update'])->name('test.organizations.update');
+Route::get('/admin/test/organizations/{org_id}', [TestOrganizationController::class, 'show'])->name('organizations.show');
+
 
 use App\Http\Controllers\Admin\RTPController;
 

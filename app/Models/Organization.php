@@ -17,4 +17,10 @@ class Organization extends Model
 
     // Fillable attributes
     protected $fillable = ['org_name', 'org_logo'];
+
+    public function projects()
+{
+    return $this->hasMany(Project::class, 'org_id');
+}
+
 }

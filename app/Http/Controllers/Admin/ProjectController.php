@@ -7,8 +7,17 @@ use Illuminate\Http\Request;
 use App\Models\Project;
 use Illuminate\Support\Facades\Log;
 
+
 class ProjectController extends Controller
 {
+
+    public function index()
+{
+    $user = Auth::user();
+    $projects = Project::where('org_id', $user->org_id)->get();
+    return view('user.projects.index', compact('projects'));
+}
+
     // ====================================
     // READ
     // ====================================
