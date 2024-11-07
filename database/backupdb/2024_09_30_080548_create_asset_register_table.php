@@ -9,8 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('asset_register', function (Blueprint $table) {
-            $table->id('asset_id'); // Use `id()` method for auto-incrementing ID
-            $table->foreignId('organization_id')->nullable()->constrained('organizations', 'org_id');
+            $table->id(); // Auto-incrementing 'id'
             $table->foreignId('project_id')->nullable()->constrained('projects', 'prj_id');
             $table->foreignId('user_id')->nullable()->constrained('users', 'user_id');
             $table->string('asset_name');

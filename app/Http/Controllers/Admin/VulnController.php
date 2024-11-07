@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Vulnerability;
 use App\Models\VulnerabilityGroup;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class VulnController extends Controller
 {
@@ -63,6 +63,7 @@ class VulnController extends Controller
     public function getVulnerabilitiesByGroup($groupId)
 {
     $vulnerabilities = Vulnerability::where('vulnerability_group_id', $groupId)->get();
-    return view('partials.vulnerabilities', compact('vulnerabilities')); // Create this view for vulnerabilities
+    return response()->json($vulnerabilities);
 }
 }
+

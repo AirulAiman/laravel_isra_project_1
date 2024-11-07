@@ -4,13 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateAssetRegisterTable extends Migration
 {
-    public function up(): void
+    public function up()
     {
         Schema::create('asset_register', function (Blueprint $table) {
-            $table->id('asset_id'); // Use `id()` method for auto-incrementing ID
-            $table->foreignId('organization_id')->nullable()->constrained('organizations', 'org_id');
+            $table->id();
             $table->foreignId('project_id')->nullable()->constrained('projects', 'prj_id');
             $table->foreignId('user_id')->nullable()->constrained('users', 'user_id');
             $table->string('asset_name');
@@ -24,8 +23,8 @@ return new class extends Migration
         });
     }
 
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('asset_register');
     }
-};
+}

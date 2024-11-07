@@ -254,6 +254,13 @@ Route::put('/admin/projects/{prj_id}', [ProjectController::class, 'update'])->na
 Route::get('/admin/projects/create', [ProjectController::class, 'create'])->name('projects.create'); // Create new project
 
 
+Route::resource('asset_register', AssetRegisterController::class);
+Route::resource('risk_assessment', RiskAssessmentController::class);
+
+Route::get('user/risk_assessment/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessment.edit');
+Route::put('user/risk_assessment/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessment.update');
+
+
 
 
 

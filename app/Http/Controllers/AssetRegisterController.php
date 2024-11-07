@@ -22,56 +22,49 @@ class AssetRegisterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'asset_name' => 'required|string|max:255',
-            'asset_serial_no' => 'required|string|max:255',
-            'asset_category' => 'required|in:Process,Data & Information,Hardware,Software,Service,People,Premise',
-            'asset_qty' => 'required|integer|min:1',
-            'asset_owner' => 'required|string|max:255',
-            'asset_location' => 'nullable|string|max:255',
+            'asset_name' => 'required|string',
+            'asset_serial_no' => 'required|string',
+            'asset_category' => 'required|string',
+            'asset_qty' => 'required|integer',
+            'asset_owner' => 'required|string',
         ]);
 
         $asset = AssetRegister::create($request->all());
 
-        // Create corresponding Risk Assessment record
+        // Automatically create a RiskAssessment entry for the new asset
         RiskAssessment::create([
             'asset_id' => $asset->id,
-            // other fields can be set to default or specific logic
-            'confidentiality' => 0,
-            'integrity' => 0,
-            'availability' => 0,
-            'likelihood' => 'Low',
-            'impact' => 'Low',
-            'risk_level' => 'Acceptable',
-            // set any other default values as needed
+            'personnel' => 'N/A',
+            'risk_level' => 'Low',
+            'start_time' => now(),
         ]);
 
-        return redirect()->route('asset_register.index')->with('success', 'Asset registered successfully!');
+        return redirect()->route('asset_register.index')->with('success', 'Asset registered and risk assessment created.');
     }
 
-    public function edit(AssetRegister $asset)
+    public function edit(AssetRegister $asset_register)
     {
-        return view('asset_register.edit', compact('asset'));
+        return view('asset_register.edit', compact('asset_register'));
     }
 
-    public function update(Request $request, AssetRegister $asset)
+    public function update(Request $request, AssetRegister $asset_register)
     {
         $request->validate([
-            'asset_name' => 'required|string|max:255',
-            'asset_serial_no' => 'required|string|max:255',
-            'asset_category' => 'required|in:Process,Data & Information,Hardware,Software,Service,People,Premise',
-            'asset_qty' => 'required|integer|min:1',
-            'asset_owner' => 'required|string|max:255',
-            'asset_location' => 'nullable|string|max:255',
+            'asset_name' => 'required|string',
+            'asset_serial_no' => 'required|string',
+            'asset_category' => 'required|string',
+            'asset_qty' => 'required|integer',
+            'asset_owner' => 'required|string',
         ]);
 
-        $asset->update($request->all());
+        $asset_register->update($request->all());
 
-        return redirect()->route('asset_register.index')->with('success', 'Asset updated successfully!');
+        return redirect()->route('asset_register.index')->with('success', 'Asset updated successfully.');
     }
 
-    public function destroy(AssetRegister $asset)
+    public function destroy(AssetRegister $asset_register)
     {
-        $asset->delete();
-        return redirect()->route('asset_register.index')->with('success', 'Asset deleted successfully!');
+        $asset_register->delete();
+        return redirect()->route('asset_register.index')->with('success', 'Asset deleted successfully.');
     }
 }
