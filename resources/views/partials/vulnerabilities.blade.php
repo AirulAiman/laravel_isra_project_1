@@ -1,8 +1,9 @@
-{{-- resources/views/partials/vulnerabilities.blade.php --}}
 @if($vulnerabilities->isEmpty())
-    <option value="">No Vulnerabilities Available</option>
+    <option value="">No vulnerabilities available</option>
 @else
     @foreach($vulnerabilities as $vulnerability)
-        <option value="{{ $vulnerability->id }}">{{ $vulnerability->name }}</option>
+        <option value="{{ $vulnerability->id }}" {{ isset($selectedVulnerabilityId) && $selectedVulnerabilityId == $vulnerability->id ? 'selected' : '' }}>
+            {{ $vulnerability->name }}
+        </option>
     @endforeach
 @endif

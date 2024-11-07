@@ -2,15 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Threat extends Model
 {
-    protected $fillable = ['threat_group_id', 'name', 'description'];
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'threat_group_id',
+    ];
 
     public function threatGroup()
     {
         return $this->belongsTo(ThreatGroup::class);
     }
 }
-

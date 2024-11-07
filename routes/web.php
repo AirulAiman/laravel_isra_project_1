@@ -170,17 +170,10 @@ Route::prefix('/admin/rtp')->group(function () {
     // Route::patch('', [TestOrganizationController::class, 'update'])->name('test.organizations.update');
 });;
 
-use App\Http\Controllers\AssetRegisterController;
 
-Route::prefix('user/asset_register')->group(function () {
-    Route::get('/', [AssetRegisterController::class, 'index'])->name('assets.index');
-    Route::get('/create', [AssetRegisterController::class, 'create'])->name('assets.create');
-    Route::post('/', [AssetRegisterController::class, 'store'])->name('assets.store');
-    Route::get('/{id}/edit', [AssetRegisterController::class, 'edit'])->name('assets.edit');
-    Route::put('/{id}', [AssetRegisterController::class, 'update'])->name('assets.update');
-    Route::delete('/{id}', [AssetRegisterController::class, 'destroy'])->name('assets.destroy');
-});
 
+use App\Http\Controllers\Admin\VulnController;
+use App\Http\Controllers\Admin\VulnGroupController;
 use App\Http\Controllers\Admin\AdminThreatGroupController;
 use App\Http\Controllers\Admin\AdminThreatController;
 
@@ -201,9 +194,6 @@ Route::prefix('admin/profile/threats/')->group(function () {
     Route::delete('/groups/{group}', [AdminThreatGroupController::class, 'destroy'])->name('threat-groups.destroy');
 });
 
-use App\Http\Controllers\Admin\VulnController;
-use App\Http\Controllers\Admin\VulnGroupController;
-
 Route::prefix('admin/profile/vulnerabilities/')->group(function () {
     Route::get('/view', [VulnController::class, 'newView'])->name('vulnerabilities.view');
     Route::get('/', [VulnController::class, 'index'])->name('vulnerabilities.index');
@@ -220,21 +210,6 @@ Route::prefix('admin/profile/vulnerabilities/')->group(function () {
     Route::put('/groups/{group}', [VulnGroupController::class, 'update'])->name('vulnerability-groups.update');
     Route::delete('/groups/{group}', [VulnGroupController::class, 'destroy'])->name('vulnerability-groups.destroy');
 });
-
-
-use App\Http\Controllers\RiskAssessmentController;
-
-// Route::resource('risk_assessments', RiskAssessmentController::class);
-
-
-
-
-Route::get('user/risk_assessments', [RiskAssessmentController::class, 'index'])->name('risk_assessments.index');
-Route::get('user/risk_assessments/create', [RiskAssessmentController::class, 'create'])->name('risk_assessments.create');
-Route::post('user/risk_assessments', [RiskAssessmentController::class, 'store'])->name('risk_assessments.store');
-Route::get('user/risk_assessments/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessments.edit');
-Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessments.update');
-Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessments.destroy');
 
 
 use App\Http\Controllers\Admin\UserManagementController;
@@ -256,14 +231,48 @@ Route::put('/admin/projects/{prj_id}', [ProjectController::class, 'update'])->na
 Route::get('/admin/projects/create', [ProjectController::class, 'create'])->name('projects.create'); // Create new project
 
 
-Route::resource('asset_register', AssetRegisterController::class);
-Route::resource('risk_assessment', RiskAssessmentController::class);
-
-Route::get('user/risk_assessment/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessment.edit');
-Route::put('user/risk_assessment/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessment.update');
+// Route::resource('risk_assessments', RiskAssessmentController::class);
 
 
 
+
+
+
+// Organization Profile and Project Management
+Route::get('/organizations/{org_id}', [TestOrganizationController::class, 'show'])->name('organizations.show');
+Route::post('/organizations/{org_id}/assign-user', [UserManagementController::class, 'assignUser'])->name('organizations.assignUser');
+
+// Admin-specific Routes
+Route::get('/organizations/{org_id}/manage-users', [UserManagementController::class, 'manageUsers'])->name('admin.organizations.manageUsers');
+Route::get('/organizations/{org_id}/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::post('/organizations/{org_id}/projects', [ProjectController::class, 'store'])->name('projects.store');
+
+// Project Management
+Route::get('/admin/projects', [ProjectController::class, 'index'])->name('user.projects'); // Users can view their org projects
+Route::get('/admin/projects', [ProjectController::class, 'view'])->name('admin.projects'); // Admin view all projects
+Route::post('/admin/projects', [ProjectController::class, 'store'])->name('projects.store'); // Store new projects
+Route::put('/admin/projects/{prj_id}', [ProjectController::class, 'update'])->name('projects.update'); // Update projects
+Route::get('/admin/projects/create', [ProjectController::class, 'create'])->name('projects.create'); // Create new project
+
+
+use App\Http\Controllers\AssetRegisterController;
+use App\Http\Controllers\RiskAssessmentController;
+
+// Routes for Asset Register
+Route::get('user/asset_register', [AssetRegisterController::class, 'index'])->name('asset_register.index');
+Route::get('user/asset_register/create', [AssetRegisterController::class, 'create'])->name('asset_register.create');
+Route::post('user/asset_register', [AssetRegisterController::class, 'store'])->name('asset_register.store');
+Route::get('user/asset_register/{id}/edit', [AssetRegisterController::class, 'edit'])->name('asset_register.edit');
+Route::put('user/asset_register/{id}', [AssetRegisterController::class, 'update'])->name('asset_register.update');
+Route::delete('user/asset_register/{id}', [AssetRegisterController::class, 'destroy'])->name('asset_register.destroy');
+
+// Routes for Risk Assessment
+Route::get('user/risk_assessments', [RiskAssessmentController::class, 'index'])->name('risk_assessment.index');
+Route::get('user/risk_assessments/create', [RiskAssessmentController::class, 'create'])->name('risk_assessment.create');
+Route::post('user/risk_assessments', [RiskAssessmentController::class, 'store'])->name('risk_assessment.store');
+Route::get('user/risk_assessments/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessment.edit');
+Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessment.update');
+Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessment.destroy');
 
 
 

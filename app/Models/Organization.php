@@ -9,20 +9,12 @@ class Organization extends Model
 {
     use HasFactory;
 
+    // Specify custom primary key field
     protected $primaryKey = 'org_id';
 
-    protected $fillable = [
-        'org_name',
-        'org_desc',
-    ];
+    // Remove any assumption about org_id, let Laravel handle it automatically
+    public $incrementing = true;
 
-    public function projects()
-    {
-        return $this->hasMany(Project::class, 'org_id');
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class, 'org_id');
-    }
+    // Fillable attributes
+    protected $fillable = ['org_name', 'org_logo'];
 }

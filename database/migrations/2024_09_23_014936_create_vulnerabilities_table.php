@@ -12,7 +12,7 @@ return new class extends Migration
     public function up()
 {
     Schema::create('vulnerabilities', function (Blueprint $table) {
-        $table->bigIncrements('id')->primary();
+        $table->id();
         $table->unsignedBigInteger('vulnerability_group_id');
         $table->string('name');
         $table->text('description');

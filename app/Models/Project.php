@@ -24,17 +24,4 @@ class Project extends Model
         'updated_at',
         'org_id',
     ];
-
-
-
-    public function organization()
-    {
-        return $this->belongsTo(Organization::class, 'org_id');
-    }
-
-    public function riskAssessments()
-    {
-        return $this->hasMany(RiskAssessment::class, 'prj_id');
-    }
-
 }

@@ -39,6 +39,15 @@
                                         placeholder="{{ $org->org_name }}">
                                 </div>
 
+                                <div class="col-12 my-3">
+                                    <label class="form-label fw-bold">
+                                        Manage Users:
+                                    </label>
+                                    <br>
+                                    <a class="btn btn-primary" href="/admin/user-management/">
+                                        Users
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

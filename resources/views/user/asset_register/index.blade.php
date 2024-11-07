@@ -28,14 +28,14 @@
         <tbody>
             @foreach($assets as $asset)
                 <tr>
-                    <td>{{ $asset->id }}</td>
+                    <td>{{ $asset->asset_id }}</td>
                     <td>{{ $asset->asset_name }}</td>
                     <td>{{ $asset->asset_desc }}</td>
                     <td>{{ $asset->asset_category }}</td>
                     <td>{{ $asset->asset_owner }}</td>
                     <td>
-                        <a href="{{ route('assets.edit', $asset->id) }}" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('assets.edit', $asset->asset_id) }}" class="btn btn-warning">Edit</a>
+                        <form action="{{ route('assets.destroy', $asset->asset_id) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">Delete</button>

@@ -10,19 +10,9 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('/icons/fontawesome-free-6.6.0-web/css/all.min.css') }}">
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your App</title>
-    @livewireStyles
-
 </head>
 
 <body>
-
-    @yield('content1')
-
-    @livewireScripts
-
     @yield('content')
 
     <!-- Bootstrap Bundle with Popper -->

@@ -15,13 +15,6 @@ class OrganizationController extends Controller
         return view('organization.index', compact('organizations'));
     }
 
-    public function show($org_id)
-{
-    $organization = Organization::with('projects')->findOrFail($org_id);
-    $users = $organization->users;  // Assuming you have a relationship between organizations and users
-    return view('organization.profile', compact('organization', 'users'));
-}
-
     public function view()
     {
         $organizations = Organization::all();

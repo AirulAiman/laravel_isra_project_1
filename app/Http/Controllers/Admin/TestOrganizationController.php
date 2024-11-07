@@ -9,13 +9,6 @@ use Intervention\Image\Facades\Image;
 
 class TestOrganizationController extends Controller
 {
-
-    public function show($org_id)
-    {
-        $organization = Organization::with('projects', 'users')->findOrFail($org_id);
-        return view('organization.profile', compact('organization'));
-    }
-
     // ====================================
     // READ
     // ====================================

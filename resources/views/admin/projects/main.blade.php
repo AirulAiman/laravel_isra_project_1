@@ -6,7 +6,6 @@
     {{-- NAVBAR --}}
     @include('navbar.layout')
 
-
     {{-- TITLE --}}
     <div class="container">
         <div class="align-items-center justify-content-center my-5">

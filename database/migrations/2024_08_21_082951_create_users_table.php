@@ -17,7 +17,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
-            
+            $table->foreignId('organization')->nullable()->constrained(table:'organizations', column:'org_id');
         });
     }
 
