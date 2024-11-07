@@ -205,11 +205,12 @@ use App\Http\Controllers\Admin\VulnController;
 use App\Http\Controllers\Admin\VulnGroupController;
 
 Route::prefix('admin/profile/vulnerabilities/')->group(function () {
+    Route::get('/view', [VulnController::class, 'newView'])->name('vulnerabilities.view');
     Route::get('/', [VulnController::class, 'index'])->name('vulnerabilities.index');
     Route::get('/create', [VulnController::class, 'create'])->name('vulnerabilities.create');
     Route::post('/', [VulnController::class, 'store'])->name('vulnerabilities.store');
     Route::get('/{vulnerability}/edit', [VulnController::class, 'edit'])->name('vulnerabilities.edit');
-    Route::put('/{vulnerability}', [VulnController::class, 'update'])->name('vulnerabilities.update');
+    Route::put('/{update}', [VulnController::class, 'update'])->name('vulnerabilities.update');
     Route::delete('/{vulnerability}', [VulnController::class, 'destroy'])->name('vulnerabilities.destroy');
 
     // Vulnerability Group management
@@ -219,6 +220,7 @@ Route::prefix('admin/profile/vulnerabilities/')->group(function () {
     Route::put('/groups/{group}', [VulnGroupController::class, 'update'])->name('vulnerability-groups.update');
     Route::delete('/groups/{group}', [VulnGroupController::class, 'destroy'])->name('vulnerability-groups.destroy');
 });
+
 
 use App\Http\Controllers\RiskAssessmentController;
 

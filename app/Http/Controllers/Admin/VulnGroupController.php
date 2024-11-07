@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\VulnerabilityGroup;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class VulnGroupController extends Controller
     {
         $request->validate(['name' => 'required']);
         VulnerabilityGroup::create($request->all());
-        return redirect()->route('vulnerabilities.index')->with('success', 'Vulnerability Group created successfully.');
+        return redirect()->route('vulnerabilities.view')->with('success', 'Vulnerability Group created successfully.');
     }
 
     public function edit($id)

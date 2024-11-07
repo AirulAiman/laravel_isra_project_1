@@ -58,6 +58,12 @@
                 @include('admin.tthreat-profile.components.edit')
             </div>
         </div>
+        <div class="modal fade my-5" id="delete-confirmation-modal-label-{{ $threat->id }}" tabindex="-1"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                @include('admin.tthreat-profile.components.delete')
+            </div>
+        </div>
     @endforeach
 
 @endsection

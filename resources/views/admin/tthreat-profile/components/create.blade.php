@@ -70,9 +70,7 @@
                         <div class="input-group mt-3">
                             <span class="input-group-text" id="inputGroup-sizing-default">Description</span>
                             <textarea type="text" class="form-control" aria-label="Sizing example input"
-                                aria-describedby="inputGroup-sizing-default" id="description" name="description" required>
-                            </textarea>
-
+                                aria-describedby="inputGroup-sizing-default" id="description" name="description" required></textarea>
                         </div>
                         <div class="input-group mt-3">
                             <span class="input-group-text" id="inputGroup-sizing-default">Threat Group</span>
@@ -109,7 +107,7 @@
 
         function showGroupBtn() {
             groupBtn.style.display = 'block';
-            threatBtn.style.display = 'none'; 
+            threatBtn.style.display = 'none';
         }
 
         function showThreatBtn() {
@@ -130,7 +128,5 @@
                 showThreatBtn();
             }
         });
-
-        // reroute to ''
     </script>
 </div>

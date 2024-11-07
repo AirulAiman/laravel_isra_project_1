@@ -1,28 +1,30 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\admin;
 
-use App\Models\ThreatGroup;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ThreatGroup;
 
 class AdminThreatGroupController extends Controller
 {
     public function create()
     {
-        return view('admin.threat-profile.groups.create');
+        $groups = ThreatGroup::all();
+        return view('admin.threat-profile.groups.create', compact('groups'));
     }
 
     public function store(Request $request)
     {
         $request->validate(['name' => 'required']);
         ThreatGroup::create($request->all());
-        return redirect()->route('threats.index')->with('success', 'Threat Group created successfully.');
+        return redirect()->route('threats.view')->with('success', 'Threat Group created successfully.');
     }
 
     public function edit($id)
     {
         $group = ThreatGroup::findOrFail($id);
-        return view('user.profile.threats.groups.edit', compact('group'));
+        return view('admin.threat-profile.edit', compact('group'));
     }
 
     public function update(Request $request, $id)
@@ -31,12 +33,13 @@ class AdminThreatGroupController extends Controller
         $group = ThreatGroup::findOrFail($id);
         $group->update($request->all());
         return redirect()->route('threats.index')->with('success', 'Threat Group updated successfully.');
+
     }
 
     public function destroy($id)
     {
         $group = ThreatGroup::findOrFail($id);
         $group->delete();
-        return redirect()->route('threats.index')->with('success', 'Threat Group deleted successfully.');
+        return redirect()->route('threats.view')->with('success', 'Threat Group deleted successfully.');
     }
 }

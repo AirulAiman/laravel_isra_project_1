@@ -1,5 +1,4 @@
 <div class="modal-content">
-
     <div class="modal-header">
         <h1 class="modal-title fs-5" id="delete-confirmation-modal-label-{{ $threat->id }}">Warning</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -17,5 +16,4 @@
             <button type="submit" class="btn btn-danger">Delete</button>
         </form>
     </div>
-
 </div>
