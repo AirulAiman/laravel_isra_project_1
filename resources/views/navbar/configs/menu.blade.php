@@ -11,7 +11,7 @@
                     Organization
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/admin/test/organizations">Organization List</a></li>
+                    <li><a class="dropdown-item" href="/admin/test/organizations">Organization Listings</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -19,7 +19,7 @@
                     Project
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/admin/projects">Project List</a></li>
+                    <li><a class="dropdown-item" href="/admin/projects">Project Listings</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -27,8 +27,9 @@
                     Profile
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/admin/profile/threats/view">Threat</a></li>
-                    <li><a class="dropdown-item" href="/admin/profile/vulnerabilities/view">Vulnerability</a></li>
+                    <li><a class="dropdown-item" href="/admin/profile/threats/view">Threat Profile</a></li>
+                    <li><a class="dropdown-item" href="/admin/profile/vulnerabilities/view">Vulnerability Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Process Profile</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -38,15 +39,15 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="/risk_assessments">Risk Assessment</a></li>
                     <li><a class="dropdown-item" href="/admin/rtp">Risk Treatment Plan</a></li>
+                    <li><a class="dropdown-item" href="/user/asset_register">Asset Register</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
                 <button class="btn dropdown-toggle no-caret" data-bs-toggle="dropdown" aria-expanded="false">
-                    User
+                    User Management
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="/admin/user-management/">User Listings</a></li>
-                    <li><a class="dropdown-item" href="#">Status</a></li>
                 </ul>
             </li>
 
