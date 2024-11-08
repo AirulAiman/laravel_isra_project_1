@@ -10,9 +10,8 @@ use App\Models\VulnerabilityGroup;
 use App\Models\Vulnerability;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Contracts\View\View; // Correct View import
-use Illuminate\Http\Response; // For response handling if needed
-
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\Response;
 
 class RiskAssessmentController extends Controller
 {
@@ -20,24 +19,6 @@ class RiskAssessmentController extends Controller
     {
         $riskAssessments = RiskAssessment::all();
         return view('risk_assessments.index', compact('riskAssessments'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function create()
-    {
-        // Get all assets, threat groups, threats, vulnerability groups, and vulnerabilities
-        // Get all assets, threat groups, threats, vulnerability groups, and vulnerabilities
-    $assets = AssetRegister::all();
-    $threatGroups = ThreatGroup::all();
-    $threats = Threat::all();
-    $vulnerabilityGroups = VulnerabilityGroup::all();
-    $vulnerabilities = Vulnerability::all();
-
-    return view('risk_assessments.create', compact('assets', 'threatGroups', 'threats', 'vulnerabilityGroups', 'vulnerabilities'));
     }
 
     /**
@@ -55,12 +36,11 @@ class RiskAssessmentController extends Controller
             'vulnerability_group_id' => 'nullable|exists:vulnerability_groups,id',
             'vulnerability_id' => 'nullable|exists:vulnerabilities,id',
             'confidentiality' => 'required|integer|min:0|max:3',
-        'integrity' => 'required|integer|min:0|max:3',
-        'availability' => 'required|integer|min:0|max:3',
+            'integrity' => 'required|integer|min:0|max:3',
+            'availability' => 'required|integer|min:0|max:3',
             'personnel' => 'required|string|max:255',
-            'start_time' => 'required|date',
-            'end_time' => 'nullable|date',
-            'likelihood' => 'required|string',
+            'likelihood' => 'required|in:Low,Medium,High',
+            'probability' => 'required|in:No probability,Once in a while,Most likely',
             'impact' => 'required|string',
             'risk_level' => 'required|string',
             'risk_owner' => 'nullable|string',
@@ -68,42 +48,33 @@ class RiskAssessmentController extends Controller
             'treatment' => 'nullable|string',
         ]);
 
-        
+        $riskAssessment = new RiskAssessment($request->all());
+        $riskAssessment->calculateScores();
+        $riskAssessment->save();
 
-   
-
-
-        // Create a new risk assessment entry with all fields
-        RiskAssessment::create($request->all());
-
-        return response()->redirectToRoute('risk_assessments.index')->with('success', 'Risk Assessment created successfully.');
+        return redirect()->route('risk_assessments.index')
+            ->with('success', 'Risk Assessment created successfully.');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\RiskAssessment  $risk_assessment
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    /**
- * Show the form for editing the specified resource.
- *
- * @param  \App\Models\RiskAssessment  $risk_assessment
- * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
- */
-public function edit($id)
-{
-    $riskAssessment = RiskAssessment::findOrFail($id);
-    $assets = AssetRegister::all();
-    $threatGroups = ThreatGroup::all();
-    $threats = Threat::all();
-    $vulnerabilityGroups = VulnerabilityGroup::all();
-    $vulnerabilities = Vulnerability::all();
+    public function edit($id)
+    {
+        $riskAssessment = RiskAssessment::findOrFail($id);
+        $assets = AssetRegister::all();
+        $threatGroups = ThreatGroup::all();
+        $threats = Threat::all();
+        $vulnerabilityGroups = VulnerabilityGroup::all();
+        $vulnerabilities = Vulnerability::all();
 
-    return view('risk_assessments.edit', compact(
-        'riskAssessment', 'assets', 'threatGroups', 'threats', 'vulnerabilityGroups', 'vulnerabilities'
-    ));
-}
+        return view('risk_assessments.edit', compact(
+            'riskAssessment', 'assets', 'threatGroups', 'threats', 'vulnerabilityGroups', 'vulnerabilities'
+        ));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -123,7 +94,8 @@ public function edit($id)
             'integrity' => 'required|integer|min:0|max:3',
             'availability' => 'required|integer|min:0|max:3',
             'personnel' => 'nullable|string',
-            'likelihood' => 'nullable|in:Low,Medium,High',
+            'likelihood' => 'required|in:Low,Medium,High',
+            'probability' => 'required|in:No probability,Once in a while,Most likely',
             'impact' => 'nullable|in:Low,Medium,High',
             'risk_level' => 'nullable|in:Low,Medium,High',
             'risk_owner' => 'nullable|string',
@@ -133,34 +105,35 @@ public function edit($id)
         ]);
 
         $riskAssessment = RiskAssessment::findOrFail($id);
-
+        $riskAssessment->fill($request->all());
+        $riskAssessment->calculateScores();
+        $riskAssessment->save();
 
         // Calculate CIA Score
-    $confidentiality = $request->input('confidentiality');
-    $integrity = $request->input('integrity');
-    $availability = $request->input('availability');
-    
-    $totalScore = $confidentiality + $integrity + $availability;
+        $confidentiality = $request->input('confidentiality');
+        $integrity = $request->input('integrity');
+        $availability = $request->input('availability');
+        
+        $totalScore = $confidentiality + $integrity + $availability;
 
-    // Determine the CIA score description
-    if ($totalScore <= 3) {
-        $ciaScore = 'Rendah';
-    } elseif ($totalScore <= 6) {
-        $ciaScore = 'Sederhana';
-    } else {
-        $ciaScore = 'Tinggi';
-    }
+        // Determine the CIA score description
+        if ($totalScore <= 3) {
+            $ciaScore = 'Rendah';
+        } elseif ($totalScore <= 6) {
+            $ciaScore = 'Sederhana';
+        } else {
+            $ciaScore = 'Tinggi';
+        }
 
-    // Update the risk assessment
-    $riskAssessment->confidentiality = $confidentiality;
-    $riskAssessment->integrity = $integrity;
-    $riskAssessment->availability = $availability;
-    $riskAssessment->cia_score = $ciaScore; // Save the calculated CIA score
-    // ... save other fields
+        // Update the risk assessment
+        $riskAssessment->confidentiality = $confidentiality;
+        $riskAssessment->integrity = $integrity;
+        $riskAssessment->availability = $availability;
+        $riskAssessment->cia_score = $ciaScore; // Save the calculated CIA score
+        $riskAssessment->save();
 
-    $riskAssessment->save();
-
-        return redirect()->route('risk_assessments.index')->with('success', 'Risk Assessment updated successfully!');
+        return redirect()->route('risk_assessments.index')
+            ->with('success', 'Risk Assessment updated successfully.');
     }
 
     /**
