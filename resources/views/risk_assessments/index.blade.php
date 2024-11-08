@@ -24,11 +24,11 @@
                     <th>CIA Score</th>
                     <th>Threat Details</th>
                     <th>Vulnerability Details</th>
+                    <th>Buisness Loss</th>
                     <th>Likelihood</th>
-                    <th>Probability</th>
                     <th>Impact</th>
                     <th>Impact Level</th>
-                    <th>Final Risk Level</th>
+                    <th>Risk Level</th>
                     <th>Risk Owner</th>
                     <th>Actions</th>
                 </tr>
