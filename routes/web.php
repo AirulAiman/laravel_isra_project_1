@@ -226,21 +226,6 @@ Route::get('user/asset_register/{id}/edit', [AssetRegisterController::class, 'ed
 Route::put('user/asset_register/{id}', [AssetRegisterController::class, 'update'])->name('asset_register.update');
 Route::delete('user/asset_register/{id}', [AssetRegisterController::class, 'destroy'])->name('asset_register.destroy');
 
-<<<<<<< Updated upstream
-
-Route::resource('user/risk_assessments', RiskAssessmentController::class);
-
-
-
-
-
-
-
-
-
-
-
-=======
 // Routes for Risk Assessment
 Route::get('user/risk_assessments', [RiskAssessmentController::class, 'index'])->name('risk_assessment.index');
 Route::get('user/risk_assessments/create', [RiskAssessmentController::class, 'create'])->name('risk_assessment.create');
@@ -248,4 +233,3 @@ Route::post('user/risk_assessments', [RiskAssessmentController::class, 'store'])
 Route::get('user/risk_assessments/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessment.edit');
 Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessment.update');
 Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessment.destroy');
->>>>>>> Stashed changes
