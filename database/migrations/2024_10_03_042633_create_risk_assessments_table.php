@@ -10,7 +10,7 @@ class CreateRiskAssessmentsTable extends Migration
     {
         Schema::create('risk_assessments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('asset_id'); // Ensure it is unsigned
+            $table->unsignedBigInteger('asset_id');
             $table->unsignedBigInteger('threat_group_id')->nullable();
             $table->unsignedBigInteger('threat_id')->nullable();
             $table->unsignedBigInteger('vulnerability_group_id')->nullable();
@@ -22,25 +22,25 @@ class CreateRiskAssessmentsTable extends Migration
             $table->integer('availability')->default(1);
 
             // Scoring system fields
-            $table->enum('likelihood', ['Low', 'Medium', 'High'])->default('Low');
-            $table->integer('likelihood_score')->default(1);
+            $table->enum('business_loss', ['Low', 'Medium', 'High'])->default('Low');
+            $table->integer('business_score')->default(1);
             $table->decimal('cia_impact_score', 8, 2)->default(0);
             $table->enum('impact_level', ['Low', 'Medium', 'High'])->default('Low');
-            $table->enum('probability', ['No probability', 'Once in a while', 'Most likely'])->default('No probability');
-            $table->integer('probability_score')->default(1);
+            $table->enum('likelihood', ['Low', 'Medium', 'High'])->default('Low');
+            $table->integer('likelihood_score')->default(1);
             $table->decimal('final_risk_score', 8, 2)->default(0);
             $table->enum('final_risk_level', ['Low', 'Medium', 'High'])->default('Low');
 
             // Other fields
             $table->string('personnel')->nullable();
             $table->string('risk_owner')->nullable();
-            $table->string('mitigation_option')->nullable();
+            $table->text('mitigation_option')->nullable();
             $table->text('treatment')->nullable();
             $table->text('actions')->nullable();
 
             $table->timestamps();
             
-            // Define foreign keys separately
+            // Define foreign keys
             $table->foreign('asset_id')->references('id')->on('asset_register')->onDelete('cascade');
             $table->foreign('threat_group_id')->references('id')->on('threat_groups')->nullOnDelete();
             $table->foreign('threat_id')->references('id')->on('threats')->nullOnDelete();
@@ -54,5 +54,3 @@ class CreateRiskAssessmentsTable extends Migration
         Schema::dropIfExists('risk_assessments');
     }
 }
-
-

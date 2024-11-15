@@ -39,6 +39,7 @@ class AssetRegister extends Model
                 'integrity' => 1,
                 'availability' => 1,
                 'likelihood' => 'Low',
+                'business_loss' => 'Low',
                 'impact' => 'Low',
                 'risk_owner' => 'Unassigned', // default or assigned user
                 'mitigation_option' => 'None',

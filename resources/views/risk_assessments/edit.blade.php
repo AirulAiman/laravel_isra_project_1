@@ -111,6 +111,16 @@
             </div>
         </div>
 
+        <!-- Business Loss -->
+        <div class="form-group mb-3">
+            <label for="business_loss">Business Loss</label>
+            <select name="business_loss" id="business_loss" class="form-control" required>
+                <option value="Low" {{ $riskAssessment->business_loss == 'Low' ? 'selected' : '' }}>Low (Score: 1)</option>
+                <option value="Medium" {{ $riskAssessment->business_loss == 'Medium' ? 'selected' : '' }}>Medium (Score: 2)</option>
+                <option value="High" {{ $riskAssessment->business_loss == 'High' ? 'selected' : '' }}>High (Score: 3)</option>
+            </select>
+        </div>
+
         <!-- Likelihood -->
         <div class="form-group mb-3">
             <label for="likelihood">Likelihood</label>
@@ -118,16 +128,6 @@
                 <option value="Low" {{ $riskAssessment->likelihood == 'Low' ? 'selected' : '' }}>Low (Score: 1)</option>
                 <option value="Medium" {{ $riskAssessment->likelihood == 'Medium' ? 'selected' : '' }}>Medium (Score: 2)</option>
                 <option value="High" {{ $riskAssessment->likelihood == 'High' ? 'selected' : '' }}>High (Score: 3)</option>
-            </select>
-        </div>
-
-        <!-- Probability -->
-        <div class="form-group mb-3">
-            <label for="probability">Probability of Becoming a Threat</label>
-            <select name="probability" id="probability" class="form-control" required>
-                <option value="No probability" {{ $riskAssessment->probability == 'No probability' ? 'selected' : '' }}>No probability (Score: 1)</option>
-                <option value="Once in a while" {{ $riskAssessment->probability == 'Once in a while' ? 'selected' : '' }}>Once in a while (Score: 2)</option>
-                <option value="Most likely" {{ $riskAssessment->probability == 'Most likely' ? 'selected' : '' }}>Most likely (Score: 3)</option>
             </select>
         </div>
 
@@ -167,19 +167,19 @@
         <div class="row mb-3">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Current CIA Impact Score</label>
-                    <input type="text" class="form-control" value="{{ number_format($riskAssessment->cia_impact_score, 2) }}" readonly>
+                    <label>CIA Impact Score</label>
+                    <input type="text" class="form-control" value="{{ number_format((float)$riskAssessment->cia_impact_score, 2) }}" readonly>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Current Impact Level</label>
+                    <label>Impact Level</label>
                     <input type="text" class="form-control" value="{{ $riskAssessment->impact_level }}" readonly>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Current Final Risk Level</label>
+                    <label>Final Risk Level</label>
                     <input type="text" class="form-control" value="{{ $riskAssessment->final_risk_level }}" readonly>
                 </div>
             </div>
@@ -197,47 +197,46 @@
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to update the read-only score displays
     function updateScoreDisplays() {
         const confidentiality = parseInt(document.getElementById('confidentiality').value) || 0;
         const integrity = parseInt(document.getElementById('integrity').value) || 0;
         const availability = parseInt(document.getElementById('availability').value) || 0;
+        const businessLoss = document.getElementById('business_loss').value;
         const likelihood = document.getElementById('likelihood').value;
-        const probability = document.getElementById('probability').value;
+
+        // Calculate business score
+        const businessScore = businessLoss === 'High' ? 3 : (businessLoss === 'Medium' ? 2 : 1);
+
+       // Calculate CIA impact score
+       const ciaAverage = (confidentiality + integrity + availability) / 3;
+        const ciaImpactScore = Math.floor(ciaAverage * businessScore);
+
+         // Determine impact level
+         let impactLevel;
+        if (ciaImpactScore >= 4) impactLevel = 'High';
+        else if (ciaImpactScore > 2) impactLevel = 'Medium';
+        else impactLevel = 'Low';
 
         // Calculate likelihood score
         const likelihoodScore = likelihood === 'High' ? 3 : (likelihood === 'Medium' ? 2 : 1);
 
-        // Calculate CIA impact score
-        const ciaAverage = (confidentiality + integrity + availability) / 3;
-        const ciaImpactScore = ciaAverage * likelihoodScore;
+          // Calculate final risk score
+          const finalRiskScore = Math.floor(likelihoodScore * ciaImpactScore);
 
-        // Determine impact level
-        let impactLevel;
-        if (ciaImpactScore >= 2.5) impactLevel = 'High';
-        else if (ciaImpactScore >= 1.5) impactLevel = 'Medium';
-        else impactLevel = 'Low';
-
-        // Calculate probability score
-        const probabilityScore = probability === 'Most likely' ? 3 : (probability === 'Once in a while' ? 2 : 1);
-
-        // Calculate final risk score
-        const finalRiskScore = probabilityScore * ciaImpactScore;
-
-        // Determine final risk level
-        let finalRiskLevel;
-        if (finalRiskScore >= 5) finalRiskLevel = 'High';
-        else if (finalRiskScore >= 3) finalRiskLevel = 'Medium';
+         // Determine final risk level
+         let finalRiskLevel;
+        if (finalRiskScore >= 4) finalRiskLevel = 'High';
+        else if (finalRiskScore > 2) finalRiskLevel = 'Medium';
         else finalRiskLevel = 'Low';
 
-        // Update the display fields
-        document.querySelector('input[value="{{ number_format($riskAssessment->cia_impact_score, 2) }}"]').value = ciaImpactScore.toFixed(2);
+         // Update display fields
+         document.querySelector('input[value="{{ number_format((float)$riskAssessment->cia_impact_score, 2) }}"]').value = ciaImpactScore;
         document.querySelector('input[value="{{ $riskAssessment->impact_level }}"]').value = impactLevel;
         document.querySelector('input[value="{{ $riskAssessment->final_risk_level }}"]').value = finalRiskLevel;
     }
 
-    // Add event listeners to all inputs that affect the scores
-    const inputs = ['confidentiality', 'integrity', 'availability', 'likelihood', 'probability'];
+     // Add event listeners
+     const inputs = ['confidentiality', 'integrity', 'availability', 'business_loss', 'likelihood'];
     inputs.forEach(id => {
         document.getElementById(id).addEventListener('change', updateScoreDisplays);
     });

@@ -11,8 +11,6 @@
         </div>
     @endif
 
-    {{-- <a href="{{ route('risk_assessment.create') }}" class="btn btn-primary mb-3">Add New Risk Assessment</a> --}}
-
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
@@ -24,12 +22,12 @@
                     <th>CIA Score</th>
                     <th>Threat Details</th>
                     <th>Vulnerability Details</th>
-                    <th>Buisness Loss</th>
+                    <th>Business Loss</th>
+                    <th>Impact Score</th>
                     <th>Likelihood</th>
-                    <th>Impact</th>
-                    <th>Impact Level</th>
                     <th>Risk Level</th>
                     <th>Risk Owner</th>
+                    <th>Mitigation Option</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -50,39 +48,29 @@
                             <strong>Vulnerability:</strong> {{ $assessment->vulnerability->name ?? 'N/A' }}
                         </td>
                         <td>
-                            {{ $assessment->likelihood }}
-                            @php
-                                $likelihoodScore = [
-                                    'High' => 3,
-                                    'Medium' => 2,
-                                    'Low' => 1
-                                ][$assessment->likelihood] ?? 'N/A';
-                            @endphp
-                            <span class="badge bg-secondary">Score: {{ $likelihoodScore }}</span>
+                            {{ $assessment->business_loss }}
+                            <span class="badge bg-secondary">Score: {{ $assessment->business_score }}</span>
                         </td>
                         <td>
-                            {{ $assessment->probability }}
-                            @php
-                                $probabilityScore = [
-                                    'Most likely' => 3,
-                                    'Once in a while' => 2,
-                                    'No probability' => 1
-                                ][$assessment->probability] ?? 'N/A';
-                            @endphp
-                            <span class="badge bg-secondary">Score: {{ $probabilityScore }}</span>
-                        </td>
-                        <td>{{ $assessment->cia_impact_score }}</td>
-                        <td>
+                            {{ number_format((float)$assessment->cia_impact_score, 2) }}
+                            <br>
                             <span class="badge bg-{{ $assessment->impact_level === 'High' ? 'danger' : ($assessment->impact_level === 'Medium' ? 'warning' : 'success') }}">
                                 {{ $assessment->impact_level }}
                             </span>
                         </td>
                         <td>
+                            {{ $assessment->likelihood }}
+                            <span class="badge bg-secondary">Score: {{ $assessment->likelihood_score }}</span>
+                        </td>
+                        <td>
                             <span class="badge bg-{{ $assessment->final_risk_level === 'High' ? 'danger' : ($assessment->final_risk_level === 'Medium' ? 'warning' : 'success') }}">
                                 {{ $assessment->final_risk_level }}
                             </span>
+                            <br>
+                            <small>Score: {{ number_format((float)$assessment->final_risk_score, 0) }}</small>
                         </td>
                         <td>{{ $assessment->risk_owner }}</td>
+                        <td>{{ $assessment->mitigation_option }}</td>
                         <td>
                             <div class="btn-group" role="group">
                                 <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detailsModal{{ $assessment->id }}">
@@ -117,17 +105,23 @@
                                                     <p><strong>Personnel:</strong> {{ $assessment->personnel }}</p>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h6>Scoring Details</h6>
+                                                    <h6>CIA Triad Scores</h6>
                                                     <p><strong>Confidentiality:</strong> {{ $assessment->confidentiality }}</p>
                                                     <p><strong>Integrity:</strong> {{ $assessment->integrity }}</p>
                                                     <p><strong>Availability:</strong> {{ $assessment->availability }}</p>
-                                                    <p><strong>CIA Score:</strong> {{ $assessment->cia_score }}</p>
-                                                    <p><strong>Impact Level:</strong> {{ $assessment->impact_level }}</p>
-                                                    <p><strong>Final Risk Level:</strong> {{ $assessment->final_risk_level }}</p>
+                                                    <p><strong>CIA Score:</strong> {{ number_format((float)$assessment->cia_score, 2) }}</p>
                                                 </div>
                                             </div>
                                             <div class="row mt-3">
-                                                <div class="col-12">
+                                                <div class="col-md-6">
+                                                    <h6>Risk Assessment</h6>
+                                                    <p><strong>Business Loss:</strong> {{ $assessment->business_loss }} (Score: {{ $assessment->business_score }})</p>
+                                                    <p><strong>Likelihood:</strong> {{ $assessment->likelihood }} (Score: {{ $assessment->likelihood_score }})</p>
+                                                    <p><strong>Impact Score:</strong> {{ number_format((float)$assessment->cia_impact_score, 2) }}</p>
+                                                    <p><strong>Final Risk Score:</strong> {{ number_format((float)$assessment->final_risk_score, 2) }}</p>
+                                                    <p><strong>Final Risk Level:</strong> {{ $assessment->final_risk_level }}</p>
+                                                </div>
+                                                <div class="col-md-6">
                                                     <h6>Mitigation & Treatment</h6>
                                                     <p><strong>Mitigation Option:</strong> {{ $assessment->mitigation_option }}</p>
                                                     <p><strong>Treatment:</strong> {{ $assessment->treatment }}</p>
@@ -148,55 +142,4 @@
         </table>
     </div>
 </div>
-@endsection
-
-@section('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-
-        // Initialize popovers
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        });
-
-        // CIA Score calculation
-        const confidentialityInput = document.getElementById('confidentiality');
-        const integrityInput = document.getElementById('integrity');
-        const availabilityInput = document.getElementById('availability');
-        const ciaScoreCategoryInput = document.getElementById('cia_score_category');
-
-        function updateCIAScoreCategory() {
-            const confidentiality = parseInt(confidentialityInput.value) || 0;
-            const integrity = parseInt(integrityInput.value) || 0;
-            const availability = parseInt(availabilityInput.value) || 0;
-
-            const totalScore = confidentiality + integrity + availability;
-
-            let category;
-            if (totalScore <= 3) {
-                category = "LOW";
-            } else if (totalScore <= 6) {
-                category = "Medium";
-            } else if (totalScore <= 9) {
-                category = "High";
-            } else {
-                category = "";
-            }
-
-            ciaScoreCategoryInput.value = category;
-        }
-
-        if (confidentialityInput && integrityInput && availabilityInput) {
-            confidentialityInput.addEventListener('input', updateCIAScoreCategory);
-            integrityInput.addEventListener('input', updateCIAScoreCategory);
-            availabilityInput.addEventListener('input', updateCIAScoreCategory);
-        }
-    });
-</script>
 @endsection

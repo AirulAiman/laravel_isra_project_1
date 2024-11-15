@@ -29,7 +29,7 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="/admin/profile/threats/view">Threat Profile</a></li>
                     <li><a class="dropdown-item" href="/admin/profile/vulnerabilities/view">Vulnerability Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Process Profile</a></li>
+                    <li><a class="dropdown-item" href="/user/profile/process/index">Process Profile</a></li>
                 </ul>
             </li>
             <li class="nav-item dropdown">
@@ -97,7 +97,9 @@
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="/user/profile/threats">Threat Profile</a></li>
                     <li><a class="dropdown-item" href="/user/profile/Vulnerability">Vulnerabilities Profile</a></li>
-                    <li><a class="dropdown-item" href="#">Process Profile</a></li>
+                    <li><a class="dropdown-item" href="/user/profile/processes">Process Profile</a></li>
+                    <li><a class="dropdown-item" href="/user/profile/controls-management">Control Profile</a></li>
+
                 </ul>
             </li>
         </ul>

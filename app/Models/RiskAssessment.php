@@ -17,24 +17,45 @@ class RiskAssessment extends Model
         'confidentiality',
         'integrity',
         'availability',
-        'likelihood',
-        'likelihood_score',
+        'business_loss',
+        'business_score',
         'cia_impact_score',
         'impact_level',
-        'probability',
-        'probability_score',
+        'likelihood',
+        'likelihood_score',
         'final_risk_score',
         'final_risk_level',
         'risk_owner',
         'mitigation_option',
         'treatment',
         'actions',
-        'cia_score',  // Add this line
+        'cia_score',
     ];
 
-    // Add this method to calculate scores
     public function calculateScores()
     {
+        // Calculate business score
+        $this->business_score = match($this->business_loss) {
+            'High' => 3,
+            'Medium' => 2,
+            'Low' => 1,
+            default => 1
+        };
+    
+        // Calculate CIA impact score (average of CIA values)
+        $cia_average = ($this->confidentiality + $this->integrity + $this->availability) / 3;
+        $this->cia_impact_score = floor($cia_average * $this->business_score);
+    
+        // Set the cia_score (whole number)
+        $this->cia_score = floor($this->cia_impact_score);
+    
+        // Determine impact level based on CIA score
+        $this->impact_level = match(true) {
+            $this->cia_score >= 4 => 'High',
+            $this->cia_score > 2 => 'Medium',
+            default => 'Low'
+        };
+    
         // Calculate likelihood score
         $this->likelihood_score = match($this->likelihood) {
             'High' => 3,
@@ -43,38 +64,17 @@ class RiskAssessment extends Model
             default => 1
         };
     
-        // Calculate CIA impact score (average of CIA values * likelihood score)
-        $cia_average = ($this->confidentiality + $this->integrity + $this->availability) / 3;
-        $this->cia_impact_score = $cia_average * $this->likelihood_score;
+        // Calculate final risk score (likelihood score * impact score)
+        $this->final_risk_score = floor($this->likelihood_score * $this->cia_impact_score);
     
-        // Set the cia_score (use cia_impact_score or any desired calculation)
-        $this->cia_score = $this->cia_impact_score;  // Assign CIA score here
-    
-        // Determine impact level
-        $this->impact_level = match(true) {
-            $this->cia_impact_score >= 2.5 => 'High',
-            $this->cia_impact_score >= 1.5 => 'Medium',
-            default => 'Low'
-        };
-    
-        // Calculate probability score
-        $this->probability_score = match($this->probability) {
-            'Most likely' => 3,
-            'Once in a while' => 2,
-            'No probability' => 1,
-            default => 1
-        };
-    
-        // Calculate final risk score (probability score * impact score)
-        $this->final_risk_score = $this->probability_score * $this->cia_impact_score;
-    
-        // Determine final risk level
+        // Determine final risk level based on final risk score
         $this->final_risk_level = match(true) {
-            $this->final_risk_score >= 5 => 'High',
-            $this->final_risk_score >= 3 => 'Medium',
+            $this->final_risk_score >= 4 => 'High',
+            $this->final_risk_score > 2 => 'Medium',
             default => 'Low'
         };
     }
+
     public function assetRegister()
     {
         return $this->belongsTo(AssetRegister::class, 'asset_id');

@@ -108,6 +108,9 @@ use App\Http\Controllers\Admin\VulnController;
 use App\Http\Controllers\Admin\VulnGroupController;
 use App\Http\Controllers\Admin\AdminThreatGroupController;
 use App\Http\Controllers\Admin\AdminThreatController;
+use App\Http\Controllers\ProcessController;
+use App\Http\Controllers\ExistingControlController;
+use App\Http\Controllers\ControlManagementController;
 
 Route::prefix('admin/user-management')->group(function () {
     Route::get('/', [UserManagementController::class, 'index'])
@@ -233,3 +236,16 @@ Route::post('user/risk_assessments', [RiskAssessmentController::class, 'store'])
 Route::get('user/risk_assessments/{id}/edit', [RiskAssessmentController::class, 'edit'])->name('risk_assessment.edit');
 Route::put('user/risk_assessments/{id}', [RiskAssessmentController::class, 'update'])->name('risk_assessment.update');
 Route::delete('user/risk_assessments/{id}', [RiskAssessmentController::class, 'destroy'])->name('risk_assessment.destroy');
+
+
+Route::resource('user/profile/processes', ProcessController::class);
+
+Route::resource('user/profile/existing-controls', ExistingControlController::class);
+
+Route::get('user/profile/controls-management', [ControlManagementController::class, 'index'])->name('controls-management.index');
+Route::post('control-groups', [ControlManagementController::class, 'storeGroup'])->name('control-groups.store');
+Route::put('control-groups/{controlGroup}', [ControlManagementController::class, 'updateGroup'])->name('control-groups.update');
+Route::delete('control-groups/{controlGroup}', [ControlManagementController::class, 'destroyGroup'])->name('control-groups.destroy');
+Route::post('existing-controls', [ControlManagementController::class, 'storeControl'])->name('existing-controls.store');
+Route::put('existing-controls/{existingControl}', [ControlManagementController::class, 'updateControl'])->name('existing-controls.update');
+Route::delete('existing-controls/{existingControl}', [ControlManagementController::class, 'destroyControl'])->name('existing-controls.destroy');

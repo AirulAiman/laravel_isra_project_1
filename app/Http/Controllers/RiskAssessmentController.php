@@ -20,7 +20,6 @@ class RiskAssessmentController extends Controller
         $riskAssessments = RiskAssessment::all();
         return view('risk_assessments.index', compact('riskAssessments'));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -35,17 +34,16 @@ class RiskAssessmentController extends Controller
             'threat_id' => 'nullable|exists:threats,id',
             'vulnerability_group_id' => 'nullable|exists:vulnerability_groups,id',
             'vulnerability_id' => 'nullable|exists:vulnerabilities,id',
-            'confidentiality' => 'required|integer|min:0|max:3',
-            'integrity' => 'required|integer|min:0|max:3',
-            'availability' => 'required|integer|min:0|max:3',
-            'personnel' => 'required|string|max:255',
+            'confidentiality' => 'required|integer|min:1|max:3',
+            'integrity' => 'required|integer|min:1|max:3',
+            'availability' => 'required|integer|min:1|max:3',
+            'personnel' => 'nullable|string|max:255',
+            'business_loss' => 'required|in:Low,Medium,High',
             'likelihood' => 'required|in:Low,Medium,High',
-            'probability' => 'required|in:No probability,Once in a while,Most likely',
-            'impact' => 'required|string',
-            'risk_level' => 'required|string',
-            'risk_owner' => 'nullable|string',
+            'risk_owner' => 'nullable|string|max:255',
             'mitigation_option' => 'nullable|string',
             'treatment' => 'nullable|string',
+            'actions' => 'nullable|string',
         ]);
 
         $riskAssessment = new RiskAssessment($request->all());
@@ -55,7 +53,6 @@ class RiskAssessmentController extends Controller
         return redirect()->route('risk_assessments.index')
             ->with('success', 'Risk Assessment created successfully.');
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -75,7 +72,6 @@ class RiskAssessmentController extends Controller
             'riskAssessment', 'assets', 'threatGroups', 'threats', 'vulnerabilityGroups', 'vulnerabilities'
         ));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -86,29 +82,30 @@ class RiskAssessmentController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $validated = $request->validate([
+            'asset_id' => 'required|exists:asset_register,id',
             'threat_group_id' => 'nullable|exists:threat_groups,id',
             'threat_id' => 'nullable|exists:threats,id',
             'vulnerability_group_id' => 'nullable|exists:vulnerability_groups,id',
             'vulnerability_id' => 'nullable|exists:vulnerabilities,id',
-            'confidentiality' => 'required|integer|min:0|max:3',
-            'integrity' => 'required|integer|min:0|max:3',
-            'availability' => 'required|integer|min:0|max:3',
-            'personnel' => 'nullable|string',
+            'confidentiality' => 'required|integer|min:1|max:3',
+            'integrity' => 'required|integer|min:1|max:3',
+            'availability' => 'required|integer|min:1|max:3',
+            'personnel' => 'nullable|string|max:255',
+            'business_loss' => 'required|in:Low,Medium,High',
             'likelihood' => 'required|in:Low,Medium,High',
-            'probability' => 'required|in:No probability,Once in a while,Most likely',
-            'impact' => 'nullable|in:Low,Medium,High',
-            'risk_level' => 'nullable|in:Low,Medium,High',
-            'risk_owner' => 'nullable|string',
+            'risk_owner' => 'nullable|string|max:255',
             'mitigation_option' => 'nullable|string',
             'treatment' => 'nullable|string',
             'actions' => 'nullable|string',
         ]);
 
         $riskAssessment = RiskAssessment::findOrFail($id);
-        $riskAssessment->fill($request->all());
+        $riskAssessment->fill($validated);
         $riskAssessment->calculateScores();
         $riskAssessment->save();
 
+    
+     
         // Calculate CIA Score
         $confidentiality = $request->input('confidentiality');
         $integrity = $request->input('integrity');
@@ -133,8 +130,8 @@ class RiskAssessmentController extends Controller
         $riskAssessment->save();
 
         return redirect()->route('risk_assessments.index')
-            ->with('success', 'Risk Assessment updated successfully.');
-    }
+        ->with('success', 'Risk Assessment updated successfully.');
+}
 
     /**
      * Remove the specified resource from storage.
@@ -147,6 +144,7 @@ class RiskAssessmentController extends Controller
         $riskAssessment = RiskAssessment::findOrFail($id);
         $riskAssessment->delete();
     
-        return redirect()->route('risk_assessments.index')->with('success', 'Risk assessment deleted successfully.');
+        return redirect()->route('risk_assessments.index')
+            ->with('success', 'Risk assessment deleted successfully.');
     }
 }
